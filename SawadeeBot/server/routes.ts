@@ -34,15 +34,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const packs = await storage.getLearningPacks();
       const userProgress = await storage.getUserPackProgress(userId);
-      
+      // Precompute map for O(1) pack order lookups instead of O(n) searches
+      const packOrderMap = new Map(packs.map(p => [p.id, p.order]));
+
       const packsWithProgress = packs.map(pack => {
         const progress = userProgress.find(p => p.packId === pack.id);
         return {
           ...pack,
           userProgress: progress,
-          isUnlocked: pack.order === 1 || userProgress.some(p => 
-            p.isCompleted && 
-            packs.find(prevPack => prevPack.id === p.packId)?.order === pack.order - 1
+          isUnlocked: pack.order === 1 || userProgress.some(p =>
+            p.isCompleted &&
+            // O(1) lookup using precomputed map instead of O(n) find
+            packOrderMap.get(p.packId) === pack.order - 1
           ),
         };
       });

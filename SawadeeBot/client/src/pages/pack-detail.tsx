@@ -89,11 +89,12 @@ export default function PackDetail() {
 
   const { userProgress, videos } = packData;
   const completedVideos = userProgress?.completedVideos || 0;
-  const progressPercentage = (completedVideos / 7) * 100;
+  const totalVideos = videos?.length || 8;
+  const progressPercentage = (completedVideos / totalVideos) * 100;
 
   const handleCompleteVideo = (videoIndex: number) => {
     const newCompletedCount = Math.max(completedVideos, videoIndex + 1);
-    const isCompleted = newCompletedCount >= 7;
+    const isCompleted = newCompletedCount >= totalVideos;
     
     updateProgressMutation.mutate({
       packId: id!,
@@ -132,7 +133,7 @@ export default function PackDetail() {
               </div>
 
               <div className="flex items-center gap-6 text-sm text-muted-foreground mb-8">
-                <span data-testid="text-video-count">{videos?.length || 7} วิดีโอ</span>
+                <span data-testid="text-video-count">{totalVideos} วิดีโอ</span>
                 <span data-testid="text-estimated-hours">{packData.estimatedHours} ชั่วโมง</span>
                 {packData.targetPosition && (
                   <Badge variant="outline" data-testid="text-target-position">
@@ -146,7 +147,7 @@ export default function PackDetail() {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-card-foreground">ความคืบหน้า</h3>
                     <span className="text-sm text-muted-foreground" data-testid="text-progress-videos">
-                      {completedVideos}/7 วิดีโอ
+                      {completedVideos}/{totalVideos} วิดีโอ
                     </span>
                   </div>
                   <Progress value={progressPercentage} className="mb-4" data-testid="progress-pack" />
@@ -170,7 +171,7 @@ export default function PackDetail() {
                   <div className="space-y-4 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">จำนวนวิดีโอ:</span>
-                      <span className="text-card-foreground font-medium">{videos?.length || 7}</span>
+                      <span className="text-card-foreground font-medium">{totalVideos}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">ระยะเวลา:</span>
@@ -275,7 +276,7 @@ export default function PackDetail() {
                   </div>
                 </CardContent>
               </Card>
-            )) || Array.from({ length: 7 }, (_, index) => (
+            )) || Array.from({ length: 8 }, (_, index) => (
               <Card key={index} className="bg-card border-border">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-6">

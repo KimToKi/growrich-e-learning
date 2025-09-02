@@ -39,7 +39,7 @@ export default function StructuredPacks() {
   }
 
   const completedPacks = packs?.filter((pack: any) => pack.userProgress?.isCompleted).length || 0;
-  const totalPacks = packs?.length || 17;
+  const totalPacks = packs?.length || 15;
   const overallProgress = (completedPacks / totalPacks) * 100;
 
   return (
@@ -69,7 +69,7 @@ export default function StructuredPacks() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {packs?.map((pack: any) => {
           const progress = pack.userProgress;
-          const progressPercentage = progress ? (progress.completedVideos / 7) * 100 : 0;
+          const progressPercentage = progress ? (progress.completedVideos / 8) * 100 : 0;
           const isCurrentPack = pack.isUnlocked && !progress?.isCompleted;
           
           return (
@@ -80,7 +80,7 @@ export default function StructuredPacks() {
               description={pack.description}
               thumbnailUrl={pack.thumbnailUrl || `https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600`}
               duration={`${pack.estimatedHours} ชม.`}
-              extraInfo="7 วิดีโอ"
+              extraInfo="8 วิดีโอ"
               href={`/pack/${pack.id}`}
               isLocked={!pack.isUnlocked}
               isCompleted={progress?.isCompleted}
@@ -90,7 +90,7 @@ export default function StructuredPacks() {
               testId={`pack-${pack.order}`}
             />
           );
-        }) || Array.from({ length: 17 }, (_, index) => (
+        }) || Array.from({ length: 15 }, (_, index) => (
           <VideoCard
             key={index}
             id={`pack-${index + 1}`}
@@ -98,7 +98,7 @@ export default function StructuredPacks() {
             description="กำลังโหลดข้อมูล..."
             thumbnailUrl="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
             duration="- ชม."
-            extraInfo="7 วิดีโอ"
+            extraInfo="8 วิดีโอ"
             href="#"
             isLocked={index > 0}
             testId={`pack-${index + 1}`}
@@ -114,7 +114,7 @@ export default function StructuredPacks() {
           className="px-8 py-3 font-semibold"
           data-testid="button-view-all-packs"
         >
-          ดูแพ็คเรียนทั้งหมด (17 แพ็ค)
+          ดูแพ็คเรียนทั้งหมด (15 แพ็ค)
         </Button>
       </div>
     </section>

@@ -30,7 +30,7 @@ Preferred communication style: Simple, everyday language.
 
 ## Key Data Models
 - **Users**: Profile information with position-based role filtering
-- **Learning Packs**: 17 sequential structured learning modules
+- **Learning Packs**: 15 sequential structured learning modules
 - **Pack Videos**: Ordered video content within learning packs
 - **General Videos**: Standalone content with category and position filtering
 - **Progress Tracking**: Granular video and pack completion tracking

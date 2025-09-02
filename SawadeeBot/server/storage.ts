@@ -330,8 +330,19 @@ export class DatabaseStorage implements IStorage {
 
     const totalSeconds = learningHoursResult[0]?.totalDuration || 0;
     const learningHours = Math.round(totalSeconds / 3600 * 10) / 10;
+    const weeklyHoursResult = await db
+      .select({
+        totalDuration: sql<number>`SUM(${userVideoProgress.watchedDuration})`
+      })
+      .from(userVideoProgress)
+      .where(
+        and(
+          eq(userVideoProgress.userId, userId),
+          sql`${userVideoProgress.completedAt} >= ${weekAgo}`
+        )
+      );
 
-    const weeklySeconds = totalSeconds; // Simplified - would need proper weekly calculation
+    const weeklySeconds = weeklyHoursResult[0]?.totalDuration || 0;
     const weeklyHours = Math.round(weeklySeconds / 3600 * 10) / 10;
 
     return {

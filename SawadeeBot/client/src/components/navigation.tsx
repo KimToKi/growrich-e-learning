@@ -18,7 +18,7 @@ export default function Navigation() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement search functionality
+    // Search feature placeholder
     console.log("Search query:", searchQuery);
   };
 

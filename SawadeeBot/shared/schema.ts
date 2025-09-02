@@ -36,19 +36,19 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Learning packs (17 structured packs)
+// Learning packs (15 structured packs)
 export const learningPacks = pgTable("learning_packs", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: varchar("title").notNull(),
   description: text("description"),
   thumbnailUrl: varchar("thumbnail_url"),
-  order: integer("order").notNull(), // Sequential order 1-17
+  order: integer("order").notNull(), // Sequential order 1-15
   estimatedHours: integer("estimated_hours"),
   targetPosition: varchar("target_position"), // Target job position
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Videos in learning packs (7 videos per pack)
+// Videos in learning packs (8-9 videos per pack)
 export const packVideos = pgTable("pack_videos", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   packId: varchar("pack_id").notNull(),
@@ -56,7 +56,7 @@ export const packVideos = pgTable("pack_videos", {
   description: text("description"),
   youtubeId: varchar("youtube_id").notNull(),
   duration: integer("duration"), // Duration in seconds
-  order: integer("order").notNull(), // Order within pack 1-7
+  order: integer("order").notNull(), // Order within pack 1-9
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -79,7 +79,7 @@ export const userPackProgress = pgTable("user_pack_progress", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull(),
   packId: varchar("pack_id").notNull(),
-  completedVideos: integer("completed_videos").default(0), // Out of 7
+  completedVideos: integer("completed_videos").default(0), // Out of total videos in pack
   isCompleted: boolean("is_completed").default(false),
   completedAt: timestamp("completed_at"),
   createdAt: timestamp("created_at").defaultNow(),

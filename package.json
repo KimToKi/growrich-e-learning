@@ -1,0 +1,11 @@
+{
+  "name": "growrich-e-learning",
+  "private": true,
+  "scripts": {
+    "install": "cd SawadeeBot && npm install",
+    "build": "npm --prefix SawadeeBot run build",
+    "start": "npm --prefix SawadeeBot start",
+    "dev": "npm --prefix SawadeeBot run dev",
+    "test": "npm --prefix SawadeeBot test"
+  }
+}

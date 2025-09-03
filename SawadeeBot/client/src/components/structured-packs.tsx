@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import VideoCard from "./video-card";
 
 export default function StructuredPacks() {
-  const { data: packs, isLoading } = useQuery({
+  const { data: packs = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/learning-packs"],
   });
 

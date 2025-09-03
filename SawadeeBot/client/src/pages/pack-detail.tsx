@@ -17,7 +17,7 @@ export default function PackDetail() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  const { data: packData, isLoading } = useQuery({
+  const { data: packData, isLoading } = useQuery<any>({
     queryKey: ["/api/learning-packs", id],
     enabled: !!id,
   });

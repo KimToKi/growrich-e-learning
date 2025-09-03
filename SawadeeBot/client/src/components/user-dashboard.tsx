@@ -3,12 +3,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
+interface DashboardData {
+  completedPacks?: number;
+  totalVideosWatched?: number;
+  learningHours?: number;
+  weeklyProgress?: {
+    videosWatched?: number;
+    hoursLearned?: number;
+    packsCompleted?: number;
+    streak?: number;
+  };
+}
+
 export default function UserDashboard() {
-  const { data: dashboardData, isLoading } = useQuery({
+  const { data: dashboardData, isLoading } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
   });
 
-  const { data: achievements } = useQuery({
+  const { data: achievements = [] } = useQuery<any[]>({
     queryKey: ["/api/achievements"],
   });
 
@@ -134,9 +146,9 @@ export default function UserDashboard() {
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 ${
-                    weeklyProgress.streak >= 7 ? 'bg-accent' : 'bg-muted'
+                    (weeklyProgress.streak ?? 0) >= 7 ? 'bg-accent' : 'bg-muted'
                   }`}>
-                    <i className={`fas fa-fire ${weeklyProgress.streak >= 7 ? 'text-accent-foreground' : 'text-muted-foreground'}`}></i>
+                    <i className={`fas fa-fire ${(weeklyProgress.streak ?? 0) >= 7 ? 'text-accent-foreground' : 'text-muted-foreground'}`}></i>
                   </div>
                   <p className="text-xs text-muted-foreground">เรียนต่อเนื่อง 7 วัน</p>
                 </div>

@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: growrich-e-learning
+    env: node
+    rootDir: SawadeeBot
+    buildCommand: pnpm install --prod=false --frozen-lockfile && pnpm run build
+    startCommand: pnpm start
+    envVars:
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"

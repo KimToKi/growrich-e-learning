@@ -4,16 +4,14 @@
 Growrich E-Learning is a full‑stack platform for delivering learning packs and general video content. It uses an Express backend with a React client and integrates with Replit for authentication.
 
 ## Installation
-1. Change into the application directory
-   ```bash
-   cd SawadeeBot
-   ```
-2. Install dependencies
-   ```bash
-   npm install
-   ```
+Install dependencies from the repository root (this installs the application located in `SawadeeBot`):
+```bash
+npm install
+```
+You can still run `cd SawadeeBot && npm install` if you prefer to work from that directory.
 
 ## Running
+From the repository root:
 - **Development**
   ```bash
   npm run dev

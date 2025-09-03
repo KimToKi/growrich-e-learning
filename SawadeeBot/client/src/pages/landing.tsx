@@ -31,7 +31,7 @@ export default function Landing() {
               <Button 
                 size="lg" 
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-12 py-4 text-lg font-semibold"
-                onClick={() => window.location.href = '/api/login'}
+                onClick={() => window.location.href = '/api/login/google'}
                 data-testid="button-login"
               >
                 เข้าสู่ระบบ

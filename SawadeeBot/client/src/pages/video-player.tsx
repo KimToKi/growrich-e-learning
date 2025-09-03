@@ -20,7 +20,7 @@ export default function VideoPlayer() {
   const [isCompleted, setIsCompleted] = useState(false);
 
   // For pack videos, we need to get the pack info
-  const { data: packData } = useQuery({
+  const { data: packData } = useQuery<any>({
     queryKey: ["/api/learning-packs", "video", id],
     enabled: type === "pack",
     queryFn: async () => {
@@ -31,7 +31,7 @@ export default function VideoPlayer() {
   });
 
   // For general videos
-  const { data: videoData, isLoading } = useQuery({
+  const { data: videoData, isLoading } = useQuery<any>({
     queryKey: type === "general" ? ["/api/general-videos", id] : ["/api/pack-videos", id],
     enabled: !!id,
   });
@@ -53,7 +53,7 @@ export default function VideoPlayer() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/api/login/google";
         }, 500);
         return;
       }

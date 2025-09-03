@@ -1,7 +1,7 @@
 # growrich-e-learning
 
 ## Overview
-Growrich E-Learning is a full‑stack platform for delivering learning packs and general video content. It uses an Express backend with a React client and integrates with Replit for authentication.
+Growrich E-Learning is a full‑stack platform for delivering learning packs and general video content. It uses an Express backend with a React client and integrates with Google for authentication.
 
 ## Installation
 1. Change into the application directory
@@ -27,11 +27,11 @@ Growrich E-Learning is a full‑stack platform for delivering learning packs and
 ## Environment Variables
 Create a `.env` file or set the following variables:
 - `DATABASE_URL` – PostgreSQL connection string
-- `REPLIT_DOMAINS` – comma‑separated list of allowed domains
-- `REPL_ID` – Replit application ID
 - `SESSION_SECRET` – secret for Express session cookies
-- `ISSUER_URL` – OIDC issuer URL (optional, defaults to `https://replit.com/oidc`)
 - `PORT` – port to listen on (default `5000`)
+- `GOOGLE_CLIENT_ID` – Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET` – Google OAuth client secret
+- `GOOGLE_CALLBACK_URL` – callback URL for Google OAuth (default `/api/google/callback`)
 
 ## Testing the API
 After the server is running and you have an authenticated session, you can test endpoints such as:

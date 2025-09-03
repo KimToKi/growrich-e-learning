@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function HeroSection() {
-  const { data: dashboardData } = useQuery({
+  const { data: dashboardData } = useQuery<any>({
     queryKey: ["/api/dashboard"],
   });
 

@@ -25,7 +25,7 @@ import { db } from "./db";
 import { eq, and, desc, asc, count, sql } from "drizzle-orm";
 
 export interface IStorage {
-  // User operations (mandatory for Replit Auth)
+  // User operations (required for OAuth)
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
@@ -132,11 +132,11 @@ export class DatabaseStorage implements IStorage {
       conditions.push(sql`${generalVideos.title} ILIKE ${`%${search}%`} OR ${generalVideos.description} ILIKE ${`%${search}%`}`);
     }
     
-    let query = db.select().from(generalVideos);
+    let query: any = db.select().from(generalVideos);
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
     }
-    
+
     return await query.orderBy(desc(generalVideos.viewCount));
   }
 

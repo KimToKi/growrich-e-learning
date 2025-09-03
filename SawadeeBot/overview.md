@@ -1,6 +1,6 @@
 # Overview
 
-LearnStream is a corporate learning management system (LMS) built with React, Express.js, and PostgreSQL. The platform provides structured learning paths and general video content for employee skill development, with comprehensive progress tracking and role-based content filtering. It features a modern dark-themed UI built with shadcn/ui components and integrates with Replit's authentication system.
+LearnStream is a corporate learning management system (LMS) built with React, Express.js, and PostgreSQL. The platform provides structured learning paths and general video content for employee skill development, with comprehensive progress tracking and role-based content filtering. It features a modern dark-themed UI built with shadcn/ui components and integrates with Google OAuth for authentication.
 
 # User Preferences
 
@@ -21,7 +21,7 @@ Preferred communication style: Simple, everyday language.
 - **Database ORM**: Drizzle ORM for type-safe database operations
 - **API Design**: RESTful endpoints with structured error handling
 - **Session Management**: Express sessions with PostgreSQL store
-- **Authentication**: Replit OAuth integration with OpenID Connect
+- **Authentication**: Google OAuth integration with OpenID Connect
 
 ## Data Storage
 - **Primary Database**: PostgreSQL with Neon serverless hosting
@@ -37,7 +37,7 @@ Preferred communication style: Simple, everyday language.
 - **Achievements**: Gamification system for learning milestones
 
 ## Authentication & Authorization
-- **Provider**: Replit OAuth with session-based authentication
+- **Provider**: Google OAuth with session-based authentication
 - **Session Management**: Secure HTTP-only cookies with PostgreSQL persistence
 - **Authorization**: Role-based access control using user position field
 - **Security**: CSRF protection and secure session configuration
@@ -52,10 +52,10 @@ Preferred communication style: Simple, everyday language.
 
 ## Database & Hosting
 - **Neon Database**: Serverless PostgreSQL hosting with connection pooling
-- **Replit Platform**: Development environment and deployment platform
+- **Hosting Platform**: Deployment environment of choice
 
 ## Authentication
-- **Replit Auth**: OAuth provider with OpenID Connect integration
+- **Google OAuth**: OAuth provider with OpenID Connect integration
 - **Session Store**: connect-pg-simple for PostgreSQL session persistence
 
 ## UI & Components

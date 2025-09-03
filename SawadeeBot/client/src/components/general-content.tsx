@@ -12,7 +12,7 @@ export default function GeneralContent() {
     category: "",
   });
 
-  const { data: videos, isLoading } = useQuery({
+  const { data: videos, isLoading } = useQuery<any>({
     queryKey: ["/api/general-videos", filters.category, filters.position, filters.search],
   });
 

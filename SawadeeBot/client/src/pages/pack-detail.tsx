@@ -17,7 +17,7 @@ export default function PackDetail() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  const { data: packData, isLoading } = useQuery({
+  const { data: packData, isLoading } = useQuery<any>({
     queryKey: ["/api/learning-packs", id],
     enabled: !!id,
   });
@@ -42,7 +42,7 @@ export default function PackDetail() {
           variant: "destructive",
         });
         setTimeout(() => {
-          window.location.href = "/api/login";
+          window.location.href = "/api/login/google";
         }, 500);
         return;
       }

@@ -4,11 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export default function UserDashboard() {
-  const { data: dashboardData, isLoading } = useQuery({
+  const { data: dashboardData, isLoading } = useQuery<any>({
     queryKey: ["/api/dashboard"],
   });
 
-  const { data: achievements } = useQuery({
+  const { data: achievements } = useQuery<any>({
     queryKey: ["/api/achievements"],
   });
 

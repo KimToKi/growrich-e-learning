@@ -132,11 +132,11 @@ export class DatabaseStorage implements IStorage {
       conditions.push(sql`${generalVideos.title} ILIKE ${`%${search}%`} OR ${generalVideos.description} ILIKE ${`%${search}%`}`);
     }
     
-    let query = db.select().from(generalVideos);
+    let query: any = db.select().from(generalVideos);
     if (conditions.length > 0) {
       query = query.where(and(...conditions));
     }
-    
+
     return await query.orderBy(desc(generalVideos.viewCount));
   }
 

@@ -1,101 +1,75 @@
+import { Router, type RequestHandler } from "express";
 import passport from "passport";
-import session from "express-session";
-import type { Express, RequestHandler } from "express";
-import connectPg from "connect-pg-simple";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import type { Profile } from "passport-google-oauth20";
-import { storage } from "./storage";
+import { Strategy as GoogleStrategy, Profile } from "passport-google-oauth20";
 
-export function getSession() {
-  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl,
-    tableName: "sessions",
-  });
-  return session({
-    secret: process.env.SESSION_SECRET!,
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: true,
-      maxAge: sessionTtl,
-    },
-  });
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL!;
+
+if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET || !GOOGLE_CALLBACK_URL) {
+  throw new Error("Missing GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_CALLBACK_URL");
 }
 
-async function upsertUser(profile: Profile) {
-  await storage.upsertUser({
-    id: profile.id,
-    email: profile.emails?.[0]?.value,
-    firstName: profile.name?.givenName,
-    lastName: profile.name?.familyName,
-    profileImageUrl: profile.photos?.[0]?.value,
-  });
-}
-
-export async function setupAuth(app: Express) {
-  app.set("trust proxy", 1);
-  app.use(getSession());
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  const googleStrategyInstance = new GoogleStrategy(
+passport.use(
+  "google",
+  new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: "/auth/google/callback",
+      clientID: GOOGLE_CLIENT_ID,
+      clientSecret: GOOGLE_CLIENT_SECRET,
+      callbackURL: GOOGLE_CALLBACK_URL,
     },
-    async (accessToken, refreshToken, profile, cb) => {
-      const user: any = {
-        access_token: accessToken,
-        refresh_token: refreshToken,
-        expires_at: Math.floor(Date.now() / 1000) + 3600,
-        claims: {
-          sub: profile.id,
-          email: profile.emails?.[0]?.value,
-          first_name: profile.name?.givenName,
-          last_name: profile.name?.familyName,
-          profile_image_url: profile.photos?.[0]?.value,
-        },
-      };
-      await upsertUser(profile);
-      cb(null, user);
+    async (_accessToken, _refreshToken, profile: Profile, done) => {
+      try {
+        const user = {
+          id: profile.id,
+          email: profile.emails?.[0]?.value ?? null,
+          name: profile.displayName,
+          photo: profile.photos?.[0]?.value ?? null,
+          provider: "google" as const,
+        };
+        return done(null, user);
+      } catch (err) {
+        return done(err as Error);
+      }
     }
-  );
+  )
+);
 
-  passport.use("google", googleStrategyInstance);
+passport.serializeUser((user: any, done) => done(null, user));
+passport.deserializeUser((obj: any, done) => done(null, obj));
 
-  passport.serializeUser((user: Express.User, cb) => cb(null, user));
-  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
+const router = Router();
 
-  app.get(
-    "/auth/google",
-    passport.authenticate("google", {
-      scope: ["openid", "email", "profile"],
-      accessType: "offline",
-      prompt: "consent",
-    })
-  );
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["openid", "email", "profile"],
+    accessType: "offline",
+    prompt: "consent",
+  })
+);
 
-  app.get(
-    "/auth/google/callback",
-    passport.authenticate("google", { failureRedirect: "/" }),
-    (req, res) => {
-      res.redirect("/");
-    }
-  );
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (_req, res) => {
+    res.redirect("/");
+  }
+);
 
-  app.get("/api/logout", (req, res) => {
-    req.logout(() => {
-      res.redirect("/");
+router.get("/user", (req, res) => {
+  return res.json(req.user ?? null);
+});
+
+router.post("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) return next(err);
+    req.session?.destroy(() => {
+      res.clearCookie?.("connect.sid");
+      res.status(204).end();
     });
   });
-}
+});
 
 export const isAuthenticated: RequestHandler = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -104,3 +78,4 @@ export const isAuthenticated: RequestHandler = (req, res, next) => {
   res.status(401).json({ message: "Unauthorized" });
 };
 
+export default router;

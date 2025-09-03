@@ -43,31 +43,31 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        callbackURL: "/auth/google/callback",
-      },
-      async (accessToken, refreshToken, profile, cb) => {
-        const user: any = {
-          access_token: accessToken,
-          refresh_token: refreshToken,
-          expires_at: Math.floor(Date.now() / 1000) + 3600,
-          claims: {
-            sub: profile.id,
-            email: profile.emails?.[0]?.value,
-            first_name: profile.name?.givenName,
-            last_name: profile.name?.familyName,
-            profile_image_url: profile.photos?.[0]?.value,
-          },
-        };
-        await upsertUser(profile);
-        cb(null, user);
-      }
-    )
+  const googleStrategyInstance = new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      callbackURL: "/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, cb) => {
+      const user: any = {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        expires_at: Math.floor(Date.now() / 1000) + 3600,
+        claims: {
+          sub: profile.id,
+          email: profile.emails?.[0]?.value,
+          first_name: profile.name?.givenName,
+          last_name: profile.name?.familyName,
+          profile_image_url: profile.photos?.[0]?.value,
+        },
+      };
+      await upsertUser(profile);
+      cb(null, user);
+    }
   );
+
+  passport.use("google", googleStrategyInstance);
 
   passport.serializeUser((user: Express.User, cb) => cb(null, user));
   passport.deserializeUser((user: Express.User, cb) => cb(null, user));

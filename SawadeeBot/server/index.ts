@@ -1,7 +1,7 @@
 import express from "express";
 import session from "express-session";
 import cors from "cors";
-import connectRedis from "connect-redis";
+import RedisStore from "connect-redis";
 import { createClient } from "redis";
 
 async function bootstrap() {
@@ -24,11 +24,11 @@ async function bootstrap() {
   await redisClient.connect();
 
   // Redis store
-  const RedisStore = connectRedis(session);
+  const store = new RedisStore({ client: redisClient, prefix: "sess:" });
   app.use(
     session({
       name: "sid",
-      store: new RedisStore({ client: redisClient, prefix: "sess:" }),
+      store: store as unknown as session.Store,
       secret: process.env.SESSION_SECRET as string,
       resave: false,
       saveUninitialized: false,

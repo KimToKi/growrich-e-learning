@@ -1,12 +1,20 @@
 {
   "name": "growrich-e-learning",
   "private": true,
-  "engines": { "node": ">=18" },
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "install": "cd SawadeeBot && npm install",
     "build": "npm --prefix SawadeeBot run build",
     "start": "npm --prefix SawadeeBot start",
     "dev": "npm --prefix SawadeeBot run dev",
     "test": "npm --prefix SawadeeBot test"
+  },
+  "dependencies": {
+    "connect-redis": "^9.0.0",
+    "cors": "^2.8.5",
+    "express-session": "^1.18.2",
+    "ioredis": "^5.7.0"
   }
 }

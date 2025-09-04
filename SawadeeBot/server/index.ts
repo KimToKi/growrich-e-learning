@@ -41,6 +41,11 @@ async function bootstrap() {
     })
   );
 
+  // Root route
+  app.get("/", (_req, res) => {
+    res.send("Server is running");
+  });
+
   // Routes
   app.post("/api/login", (req, res) => {
     (req.session as any).user = { id: "123", email: "demo@example.com" };

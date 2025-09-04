@@ -1,5 +1,8 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import cors from "cors";
+import RedisStoreFactory from "connect-redis";
+import { Redis } from "ioredis";
 import passport from "passport";
 import path from "path";
 import authRouter from "./auth";
@@ -8,20 +11,37 @@ import { setupVite, log } from "./vite";
 
 const app = express();
 
+// 1) proxy & body parser
+app.set("trust proxy", 1);
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// 2) CORS
+const ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+app.use(cors({ origin: ORIGIN, credentials: true }));
+
+// 3) Redis session
+const redis = new Redis(process.env.REDIS_URL);
+const RedisStore = RedisStoreFactory(session);
+
 app.use(
   session({
+    name: "sid",
+    store: new RedisStore({ client: redis, prefix: "sess:" }),
     secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
-    cookie: { sameSite: "lax", secure: "auto" },
+    cookie: {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      secure: true,
+      sameSite: "none",
+    },
   })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 app.use("/auth", authRouter);
 

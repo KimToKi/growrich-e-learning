@@ -3,9 +3,12 @@ import session from "express-session";
 import cors from "cors";
 import RedisStore from "connect-redis";
 import { createClient } from "redis";
+import { createServer } from "http";
+import { serveStatic, setupVite } from "./vite";
 
 async function bootstrap() {
   const app = express();
+  const server = createServer(app);
 
   // proxy + body parser
   app.set("trust proxy", 1);
@@ -41,11 +44,6 @@ async function bootstrap() {
     })
   );
 
-  // Root route
-  app.get("/", (_req, res) => {
-    res.send("Server is running");
-  });
-
   // Routes
   app.post("/api/login", (req, res) => {
     (req.session as any).user = { id: "123", email: "demo@example.com" };
@@ -58,8 +56,14 @@ async function bootstrap() {
     res.json(user);
   });
 
+  if (process.env.NODE_ENV === "production") {
+    serveStatic(app);
+  } else {
+    await setupVite(app, server);
+  }
+
   const port = Number(process.env.PORT) || 10000;
-  app.listen(port, () => console.log(`Server listening on ${port}`));
+  server.listen(port, () => console.log(`Server listening on ${port}`));
 }
 
 bootstrap().catch((err) => {
